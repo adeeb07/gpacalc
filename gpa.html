@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .gpa-output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>GPA Calculator</h2>
+    <table id="courses-table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Grade</th>
+                <th>Credits</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" value="Course #1"></td>
+                <td><input type="text" value="A"></td>
+                <td><input type="number" value="3"></td>
+                <td><button onclick="removeRow(this)">Remove</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Course #2"></td>
+                <td><input type="text" value="B+"></td>
+                <td><input type="number" value="3"></td>
+                <td><button onclick="removeRow(this)">Remove</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Course #3"></td>
+                <td><input type="text" value="B+"></td>
+                <td><input type="number" value="3"></td>
+                <td><button onclick="removeRow(this)">Remove</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="actions">
+        <button onclick="addRow()">Add row</button>
+        <button onclick="calculateGPA()">Calculate</button>
+    </div>
+    <div class="gpa-output" id="gpa-output">GPA: --</div>
+</div>
+
+<script>
+    function addRow() {
+        const table = document.getElementById('courses-table').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td><input type="text" value="Course"></td>
+            <td><input type="text" value=""></td>
+            <td><input type="number" value="0"></td>
+            <td><button onclick="removeRow(this)">Remove</button></td>
+        `;
+    }
+
+    function removeRow(button) {
+        const row = button.parentElement.parentElement;
+        row.remove();
+    }
+
+    function calculateGPA() {
+        const table = document.getElementById('courses-table').getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        let totalGradePoints = 0;
+        let totalCredits = 0;
+        const gradePoints = {
+            'A': 4.0,
+            'B+': 3.5,
+            'B': 3.0,
+            'C+': 2.5,
+            'C': 2.0,
+            'D': 1.0,
+            'F': 0.0
+        };
+
+        for (let row of rows) {
+            const grade = row.cells[1].getElementsByTagName('input')[0].value;
+            const credits = parseFloat(row.cells[2].getElementsByTagName('input')[0].value);
+
+            if (grade in gradePoints && !isNaN(credits)) {
+                totalGradePoints += gradePoints[grade] * credits;
+                totalCredits += credits;
+            }
+        }
+
+        const gpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : '--';
+        document.getElementById('gpa-output').textContent = `GPA: ${gpa}`;
+    }
+</script>
+
+</body>
+</html>
